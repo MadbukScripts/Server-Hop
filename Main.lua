@@ -27,9 +27,6 @@ local function TPReturner(placeId, sorting)
         end
         print("Fetching servers with URL: " .. url)
         local httpResponse = game:HttpGet(url)
-        if string.match(S_H:JSONDecode(httpResponse)["errors"][1]["message"], "Too") then
-            error("HTTP 429: Rate limit exceeded")
-        end
         return S_H:JSONDecode(httpResponse)
     end)
 
