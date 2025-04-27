@@ -17,24 +17,24 @@ end
 
 local function TPReturner(placeId, sorting)
     if sorting == 'Asc' then sorting = 1 else sorting = 2 end
-	print('Using sorting:', sorting)
+    print("Using sortOrder: " .. sorting)
 
     local Site
     local success, response = pcall(function()
         local url = 'https://games.roblox.com/v1/games/' .. placeId .. '/servers/Public?sortOrder=' .. sorting .. '&excludeFullGames=true&limit=100'
-        if foundAnything ~= "" then
+		if foundAnything ~= "" then
             url = url .. '&cursor=' .. foundAnything
         end
         print("Fetching servers with URL: " .. url)
         local httpResponse = game:HttpGet(url)
-        if httpResponse:find("429 Too Many Requests") then
+        if string.match(S_H:JSONDecode(httpResponse)["errors"][1]["message"], "Too") then
             error("HTTP 429: Rate limit exceeded")
         end
         return S_H:JSONDecode(httpResponse)
     end)
 
     if not success then
-        if response:find("429") then
+        if string.match(response, "429") then
             warn("Rate limit exceeded, backing off for 30 seconds")
             task.wait(30)
             return false
@@ -133,7 +133,7 @@ function module:Teleport(placeId, sorting)
         attempt = attempt + 1
         print("Waiting " .. backoff .. " seconds before next attempt")
         task.wait(backoff)
-        backoff = math.min(backoff * 1.5, 60) 
+        backoff = math.min(backoff * 1.5, 60)
     end
 
     if attempt > maxAttempts then
