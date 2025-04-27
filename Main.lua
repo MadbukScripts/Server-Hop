@@ -111,7 +111,7 @@ local module = {}
 
 function module:Teleport(placeId, sorting)
     foundAnything = ""
-    local maxAttempts = 20
+    local maxAttempts = 4
     local attempt = 1
     local backoff = 5
 
@@ -135,7 +135,7 @@ function module:Teleport(placeId, sorting)
 
     if attempt > maxAttempts then
         warn("Teleport failed after " .. maxAttempts .. " attempts")
-        local oppositeSort = (sorting == "Asc") and "Desc" or "Asc"
+        local oppositeSort = (sorting == "Desc") and 1 or 2
         print("Trying fallback with sortOrder: " .. oppositeSort)
         attempt = 1
         foundAnything = ""
